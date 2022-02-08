@@ -1,0 +1,6 @@
+com\example\upic\HelloServlet.class
+com\example\upic\resorts\ResortsServlet.class
+com\example\upic\client\ResortsApiExample.class
+com\example\upic\resorts\Resort.class
+com\example\upic\statistics\statistics.class
+com\example\upic\skiers\skiers.class
