@@ -16,6 +16,8 @@ public class skiers extends HttpServlet {
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
 
+  private int totalHits = 0;
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -78,6 +80,8 @@ public class skiers extends HttpServlet {
       // Hello
       PrintWriter out = response.getWriter();
       //write to db
+      totalHits ++;
+      System.out.println(totalHits);
       response.getWriter().write("write successful");
 
     }
