@@ -1,6 +1,10 @@
 package com.example.upic.resorts;
 
 import com.google.gson.Gson;
+import io.swagger.client.model.ResortSkiers;
+import io.swagger.client.model.ResortsList;
+import io.swagger.client.model.ResortsListResorts;
+import io.swagger.client.model.SeasonsList;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -26,7 +30,6 @@ public class ResortsServlet extends HttpServlet {
       throws ServletException, IOException {
     response.setContentType("text/html");
     String urlPath = request.getPathInfo();
-    System.out.println(urlPath);
     PrintWriter out = response.getWriter();
     if (!isValidURL(urlPath)) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -37,8 +40,13 @@ public class ResortsServlet extends HttpServlet {
     if (urlPath == null) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
-      Resort res = new Resort("test", "5");
-      String resortJsonString = new Gson().toJson(res);
+      ResortsList resorts = new ResortsList();
+      ResortsListResorts resort = new ResortsListResorts();
+      resort = resort.resortName("foo");
+      resort.setResortID(1);
+      resorts.addResortsItem(resort);
+
+      String resortJsonString = new Gson().toJson(resort);
       // Hello
       out = response.getWriter();
       out.println(resortJsonString);
@@ -64,17 +72,28 @@ public class ResortsServlet extends HttpServlet {
       out.flush();
     } else if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_OK);
+      response.setContentType("application/json");
+      ResortSkiers skiers = new ResortSkiers();
+      skiers = skiers.numSkiers(1);
+      skiers.setTime("15");
+      String skiersJsonString = new Gson().toJson(skiers);
+      // Hello
       out = response.getWriter();
-      out.println("<html><body>");
-      out.println("<h1>" + "seasons!" + "</h1>");
-      out.println("</body></html>");
+      out.println(skiersJsonString);
+      out.flush();
     }
     else  {
       response.setStatus(HttpServletResponse.SC_OK);
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      SeasonsList seasons = new SeasonsList();
+      seasons.addSeasonsItem("winter2021");
+      seasons.addSeasonsItem("winter2022");
+
+      String seasonsString = new Gson().toJson(seasons);
       out = response.getWriter();
-      out.println("<html><body>");
-      out.println("<h1>" + "resorts!" + "</h1>");
-      out.println("</body></html>");
+      out.println(seasonsString);
+      out.flush();
     }
 
   }
@@ -94,10 +113,11 @@ public class ResortsServlet extends HttpServlet {
     }
 
     if (Arrays.asList(urlParts).contains(SEASONS)) {
+      response.setStatus(HttpServletResponse.SC_CREATED);
       PrintWriter out = response.getWriter();
-      out.println("<html><body>");
-      out.println("<h1>" + "the Post!" + "</h1>");
-      out.println("</body></html>");
+      // write to db
+      //
+      response.getWriter().write("new season created");
 
     }
 
