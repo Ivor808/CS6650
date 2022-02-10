@@ -10,6 +10,7 @@ public class Client {
   Integer DAY_MAX = 420;
 
   public static void main(String[] args) throws InterruptedException {
+    long totalStart = System.nanoTime();
     ApiClient client = new ApiClient();
     client.setBasePath("http://localhost:8080");
     Integer numThreads = 64;
@@ -77,24 +78,31 @@ public class Client {
     System.out.println("Phase 2, BEGIN!");
     Long phase3Start = Math.round(0.2 * numThreads);
     CountDownLatch phase2Latch = new CountDownLatch(phase3Start.intValue());
+    int phase2SkierIdRange = numSkiers/numThreads;
+    Long phase2NumRequestsToSend = Math.round(numRuns * 0.6 * phase2SkierIdRange);
+    startTime = 91;
+    endTime = 360;
+    System.out.println("Requests to send: " + phase2NumRequestsToSend);
     for (int i = 0; i < numThreads; i++) {
-      UpicThread thread = new UpicThread(idStart, idStart + skiIdsToPass, startTime, endTime
-          , numLifts, numRequestsToSend, client, count, phase2Latch);
-      idStart += skiIdsToPass;
+      UpicThread thread = new UpicThread(idStart, idStart + phase2SkierIdRange, startTime, endTime
+          , numLifts, phase2NumRequestsToSend, client, count, phase2Latch);
+      idStart += phase2SkierIdRange;
       Thread real = new Thread(thread);
       real.start();
 
     }
     phase2Latch.await();
-    System.out.println("PHase 3, BEGIN!");
+    System.out.println("Phase 3, BEGIN!");
 
     Long phase3Threads = Math.round(0.1 * numThreads);
     Long phase3NumRequests = Math.round(0.1 * numRuns);
+    startTime = 361;
+    endTime = 420;
     CountDownLatch phase3Latch = new CountDownLatch(phase3Threads.intValue());
 
     for (int i = 0; i < phase3Threads; i++) {
       UpicThread thread = new UpicThread(idStart, idStart + skiIdsToPass, startTime, endTime
-          , numLifts, numRequestsToSend, client, count, phase3Latch);
+          , numLifts, phase3NumRequests, client, count, phase3Latch);
       idStart += skiIdsToPass;
       Thread real = new Thread(thread);
       real.start();
@@ -102,6 +110,9 @@ public class Client {
     }
     phase3Latch.await();
     System.out.println("done!");
+    long totalEnd   = System.nanoTime();
+    long totalTime = totalEnd - totalStart;
+    System.out.println(totalTime);
 
   }
 }
