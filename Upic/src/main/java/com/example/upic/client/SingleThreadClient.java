@@ -8,7 +8,7 @@ import io.swagger.client.model.LiftRide;
 public class SingleThreadClient {
 
   public static void main(String[] args) {
-    long startTime = System.nanoTime();
+    double startTime = System.nanoTime();
     // run time 157112607100
     ApiClient client = new ApiClient();
     client.setBasePath("http://localhost:8080");
@@ -20,7 +20,7 @@ public class SingleThreadClient {
     liftRide.setLiftID(1);
     liftRide.setWaitTime(1);
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
       try {
         resortsApi.writeNewLiftRide(liftRide,1,"1","1",1);
       } catch (ApiException e) {
@@ -28,9 +28,10 @@ public class SingleThreadClient {
       }
     }
 
-    long endTime   = System.nanoTime();
-    long totalTime = endTime - startTime;
-    System.out.println(totalTime);
+    double endTime   = System.nanoTime();
+    double totalTime = endTime - startTime;
+
+    System.out.println(totalTime/1000000000);
   }
 
 }

@@ -1,13 +1,22 @@
 package com.example.upic.client;
 
+import java.util.ArrayList;
+
 public class Count {
   Integer count;
+  Integer failures;
+  ArrayList<Long> latency = new ArrayList<>();
 
-  public Count(Integer count) {
-    this.count = count;
+  public Count() {
+    this.count = 0;
+    this.failures = 0;
   }
 
-  public void add() {
+  synchronized void addSuccess() {
     count ++;
+  }
+  synchronized void addFailure() {failures ++; }
+  synchronized void addToLatency(Long time) {
+    latency.add(time);
   }
 }

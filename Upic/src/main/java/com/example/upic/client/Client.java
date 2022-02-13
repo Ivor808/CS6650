@@ -3,6 +3,7 @@ package com.example.upic.client;
 import io.swagger.client.ApiClient;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 
 public class Client {
@@ -61,7 +62,7 @@ public class Client {
     int idStart = 0;
     int startTime = 1;
     int endTime = 90;
-    Count count = new Count(0);
+    Count count = new Count();
     CountDownLatch phase1Latch = new CountDownLatch(phase2Start.intValue());
     for (int i = 0; i < threadsToLaunch; i++) {
       DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -110,9 +111,16 @@ public class Client {
     }
     phase3Latch.await();
     System.out.println("done!");
-    long totalEnd   = System.nanoTime();
-    long totalTime = totalEnd - totalStart;
-    System.out.println(totalTime);
+    System.out.println("Total successful requests sent " + count.count);
+    System.out.println("Total failures " + count.failures);
+    long totalEnd   = System.nanoTime() ;
+    double totalTime = totalEnd - totalStart;
+    totalTime = totalTime/ 1000000000;
+    System.out.println("Wall time: " + totalTime);
+    System.out.println("Throughput " + (count.failures + count.count)/totalTime);
+    System.out.println("Mean response time " + count.latency.stream().mapToDouble(a->a).average());
+    System.out.println("Min response time " + Collections.min(count.latency));
+    System.out.println("Max response time " + Collections.max(count.latency));
 
   }
 }

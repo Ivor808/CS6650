@@ -48,18 +48,33 @@ public class UpicThread implements Runnable {
       liftRide.setTime(randTime);
       liftRide.setLiftID(randLiftId);
       liftRide.setWaitTime(randWaitTime);
-      try {
-        resortsApi.writeNewLiftRide(liftRide,1,"1","1",randSkiId);
-        if (i == 0) {
-          System.out.println(liftRide.toString());
+      boolean tryCall = true;
+      int numTries = 0;
+      long startTime = System.nanoTime();
+      while (tryCall) {
+        numTries++;
+        if (numTries == 5) {
+          tryCall = false;
+          count.addFailure();
+          continue;
         }
-      } catch (ApiException e) {
-        e.printStackTrace();
-      }
+        try {
+          long threadId = Thread.currentThread().getId();
+          //System.out.println("Posting! " + threadId);
+          resortsApi.writeNewLiftRide(liftRide, 1, "1", "1", randSkiId);
+          //System.out.println("Complete! " + threadId);
+          count.addSuccess();
+          tryCall = false;
+        } catch (ApiException e) {
 
+          e.printStackTrace();
+        }
+      }
+      long endTime = System.nanoTime();
+      long duration = (endTime - startTime)/1000000;
+      count.addToLatency(duration);
 
     }
-    count.add();
     latch.countDown();
 
   }
