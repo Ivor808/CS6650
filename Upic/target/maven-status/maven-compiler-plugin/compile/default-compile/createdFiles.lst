@@ -1,7 +1,10 @@
 com\example\upic\HelloServlet.class
 com\example\upic\client\Client.class
 com\example\upic\statistics\statistics.class
+com\example\upic\client\Count.class
+com\example\upic\client\ResponseRecord.class
 com\example\upic\skiers\skiers.class
+com\example\upic\client\SingleThreadClient.class
 com\example\upic\resorts\ResortsServlet.class
 com\example\upic\client\UpicThread.class
 com\example\upic\resorts\Resort.class
