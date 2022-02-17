@@ -1,4 +1,4 @@
-package com.example.upic.client;
+package helpers;
 
 import io.swagger.client.ApiClient;
 import io.swagger.client.ApiException;

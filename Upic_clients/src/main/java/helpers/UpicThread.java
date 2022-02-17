@@ -1,4 +1,4 @@
-package com.example.upic.client;
+package helpers;
 
 import io.swagger.client.ApiClient;
 import io.swagger.client.ApiException;
@@ -57,12 +57,13 @@ public class UpicThread implements Runnable {
   public void run() {
 
     SkiersApi skiersApi = new SkiersApi(apiClient);
-    int randSkiId = ThreadLocalRandom.current().nextInt(startSkier,endSkier);
-    int randLiftId = ThreadLocalRandom.current().nextInt(1, liftId);
-    int randTime = ThreadLocalRandom.current().nextInt(startTime, endTime);
-    int randWaitTime = ThreadLocalRandom.current().nextInt(1,10);
+
 
     for (int i = 0; i < numRequestsToSend; i++) {
+      int randSkiId = ThreadLocalRandom.current().nextInt(startSkier,endSkier);
+      int randLiftId = ThreadLocalRandom.current().nextInt(1, liftId);
+      int randTime = ThreadLocalRandom.current().nextInt(startTime, endTime);
+      int randWaitTime = ThreadLocalRandom.current().nextInt(0,10);
 
       LiftRide liftRide = new LiftRide();
       liftRide.setTime(randTime);
@@ -82,7 +83,6 @@ public class UpicThread implements Runnable {
           continue;
         }
         try {
-          long threadId = Thread.currentThread().getId();
           response = skiersApi.writeNewLiftRideWithHttpInfo(liftRide, 1, "1", "1", randSkiId);
           if (response.getStatusCode() == 201 ) {
             count.addSuccess();

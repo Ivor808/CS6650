@@ -1,4 +1,4 @@
-package com.example.upic.client;
+package helpers;
 
 public class ResponseRecord {
   private String startTime;

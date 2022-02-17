@@ -1,5 +1,8 @@
-package com.example.upic.client;
+package part2;
 
+import helpers.Count;
+import helpers.ResponseRecord;
+import helpers.UpicThread;
 import io.swagger.client.ApiClient;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,9 +20,9 @@ public class Client {
   public static void main(String[] args) throws InterruptedException {
     long totalStart = System.nanoTime();
     ApiClient client = new ApiClient();
-    client.setBasePath("http://18.209.168.92:8080/Upic_war/");
-    Integer numThreads = 256;
-    Integer numSkiers = 20000;
+    client.setBasePath("http://localhost:8080/upic/");
+    Integer numThreads = 64;
+    Integer numSkiers = 1000;
     Integer numLifts = 40;
     Integer numRuns = 20;
 
@@ -58,6 +61,7 @@ public class Client {
     Integer skiIdsToPass = numSkiers / (threadsToLaunch);
     Long numRequestsToSend = Math.round(numRuns * 0.2 * skiIdsToPass);
     Long phase2Start = Math.round(0.2 * threadsToLaunch);
+    int totalThreadsMade = 0;
     System.out.println("----Run params!----");
     System.out.println("Total threads " + numThreads);
     System.out.println("Num Skiers " + numSkiers);
@@ -80,10 +84,14 @@ public class Client {
           , numLifts, numRequestsToSend, client, count, phase1Latch);
       idStart += skiIdsToPass;
       Thread real = new Thread(thread);
+      totalThreadsMade ++;
       real.start();
     }
 
     phase1Latch.await();
+
+
+    // PHASE 2
     System.out.println("----Phase 2, BEGIN!----");
     Long phase3Start = Math.round(0.2 * numThreads);
     CountDownLatch phase2Latch = new CountDownLatch(phase3Start.intValue());
@@ -93,15 +101,20 @@ public class Client {
     endTime = 360;
     CountDownLatch phase2End = new CountDownLatch(numThreads);
     System.out.println("Requests to send: " + phase2NumRequestsToSend);
+    System.out.println("Total threads in phase 2 " + numThreads);
     for (int i = 0; i < numThreads; i++) {
       UpicThread thread = new UpicThread(idStart, idStart + phase2SkierIdRange, startTime, endTime
           , numLifts, phase2NumRequestsToSend, client, count, phase2Latch, phase2End);
       idStart += phase2SkierIdRange;
       Thread real = new Thread(thread);
+      totalThreadsMade ++;
       real.start();
 
     }
     phase2Latch.await();
+
+
+    // PHASE 3
     System.out.println("----Phase 3, BEGIN!----");
 
     Long phase3Threads = Math.round(0.1 * numThreads);
@@ -109,38 +122,44 @@ public class Client {
     startTime = 361;
     endTime = 420;
     CountDownLatch phase3Latch = new CountDownLatch(phase3Threads.intValue());
-
+    System.out.println("Requests to send: " + phase3NumRequests);
+    System.out.println("Total threads in phase 3 " + phase3Threads);
     for (int i = 0; i < phase3Threads; i++) {
       UpicThread thread = new UpicThread(idStart, idStart + skiIdsToPass, startTime, endTime
           , numLifts, phase3NumRequests, client, count, phase3Latch);
       idStart += skiIdsToPass;
       Thread real = new Thread(thread);
+      totalThreadsMade ++;
       real.start();
 
     }
     phase3Latch.await();
     phase2End.await();
+
+    // All phases done
     System.out.println("----Done----");
-    System.out.println("Total successful requests sent " + count.count);
-    System.out.println("Total failures " + count.failures);
+    System.out.println("Total successful requests sent " + count.getCount());
+    System.out.println("Total failures " + count.getFailures());
     long totalEnd = System.nanoTime();
     double totalTime = totalEnd - totalStart;
-    totalTime = totalTime / 1000000000;
-    System.out.println("Wall time: " + totalTime);
-    System.out.println("Throughput " + (count.failures + count.count) / totalTime);
+    totalTime = totalTime / 1_000_000_000;
+    System.out.println("Wall time (seconds): " + totalTime);
+    System.out.println("Throughput " + (count.getFailures() + count.getCount()) / totalTime);
     System.out.println(
-        "Mean response time " + count.latency.stream().mapToDouble(a -> a).average().getAsDouble());
-    System.out.println("Min response time " + Collections.min(count.latency));
-    System.out.println("Max response time " + Collections.max(count.latency));
-    Collections.sort(count.latency);
-    System.out.println("P99 latency " + count.latency.get((int) (count.latency.size() * 0.99)));
+        "Mean response time " + count.getLatency().stream().mapToDouble(a -> a).average().getAsDouble());
+    System.out.println("Min response time (ms) " + Collections.min(count.getLatency()));
+    System.out.println("Max response time (ms) " + Collections.max(count.getLatency()));
+    Collections.sort(count.getLatency());
+    System.out.println("Median response time " + count.getLatency().get(count.getLatency().size()/2));
+    System.out.println("P99 latency (ms) " + count.getLatency().get((int) (count.getLatency().size() * 0.99)));
+    System.out.println("Total threads made " + totalThreadsMade);
     System.out.println("--------");
     System.out.println("Generating csv...");
 
     try {
       FileWriter file = new FileWriter("client_times.csv");
       PrintWriter write = new PrintWriter(file);
-      ArrayList<ResponseRecord> test = count.records;
+      ArrayList<ResponseRecord> test = count.getRecords();
       write.println("Start_time, Request_Type, Latency, Response_Code");
       for (ResponseRecord record : test) {
         write.println(record);

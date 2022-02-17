@@ -89,7 +89,9 @@ public class skiers extends HttpServlet {
 
     private boolean isValidURL (String urlPath){
       String[] urlParts = urlPath.split("/");
-
+      if (urlParts.length <= 2) {
+        return false;
+      }
       if (urlParts.length <= 3 && urlParts[2].equals(VERTICAL)) {
         return true;
       } else

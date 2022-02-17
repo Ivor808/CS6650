@@ -47,7 +47,6 @@ public class ResortsServlet extends HttpServlet {
       resorts.addResortsItem(resort);
 
       String resortJsonString = new Gson().toJson(resort);
-      // Hello
       out = response.getWriter();
       out.println(resortJsonString);
       out.flush();
@@ -128,11 +127,16 @@ public class ResortsServlet extends HttpServlet {
       return true;
     }
     String[] urlParts = urlPath.split("/");
-
-    if (urlParts.length <= 3 && urlParts[2].equals("seasons")) {
+    if (urlParts.length <= 2) {
+      return false;
+    }
+    if (urlParts.length == 3 && urlParts[2].equals("seasons")) {
       return true;
-    } else
+    } else if (urlParts.length <= 7 ) {
       return urlParts[2].equals("seasons") && urlParts[4].equals("day") && urlParts[6].equals("skiers");
+  }
+  else {
+  return false;}
   }
 
   public void destroy() {
