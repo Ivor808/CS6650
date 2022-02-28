@@ -1,9 +1,14 @@
 package com.example.upic.skiers;
 
 import com.google.gson.Gson;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +20,9 @@ public class skiers extends HttpServlet {
 
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
+  private final static String QUEUE_NAME = "UPIC_QUEUE";
+  private final static String HOST_NAME = "54.175.237.216";
+  private final static int PORT = 1883;
 
   private int totalHits = 0;
 
@@ -70,6 +78,10 @@ public class skiers extends HttpServlet {
       return;
     }
 
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost(HOST_NAME);
+    factory.setPort(PORT);
+
     String[] urlParts = urlPath.split("/");
     if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_CREATED);
@@ -81,6 +93,15 @@ public class skiers extends HttpServlet {
       PrintWriter out = response.getWriter();
       //write to db
       totalHits ++;
+
+      try (Connection connection = factory.newConnection();
+          Channel channel = connection.createChannel()) {
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        channel.basicPublish("", QUEUE_NAME, null, skierId.getBytes(StandardCharsets.UTF_8));
+        System.out.println(" [x] Sent '" + skierId + "'");
+      } catch (TimeoutException e) {
+        e.printStackTrace();
+      }
       System.out.println(totalHits);
       response.getWriter().write("write successful");
 

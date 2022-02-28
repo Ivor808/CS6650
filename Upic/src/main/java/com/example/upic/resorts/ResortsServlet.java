@@ -1,13 +1,19 @@
 package com.example.upic.resorts;
 
 import com.google.gson.Gson;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import io.swagger.client.model.ResortSkiers;
 import io.swagger.client.model.ResortsList;
 import io.swagger.client.model.ResortsListResorts;
 import io.swagger.client.model.SeasonsList;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +25,9 @@ public class ResortsServlet extends HttpServlet {
 
   public static final String SEASONS = "seasons";
   public static final String SKIERS = "skiers";
+  private final static String QUEUE_NAME = "UPIC_QUEUE";
+  private final static String HOST_NAME = "50.16.122.234";
+  private final static int PORT = 5672;
   private String message;
 
   public void init() {
@@ -111,11 +120,24 @@ public class ResortsServlet extends HttpServlet {
       return;
     }
 
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost(HOST_NAME);
+    factory.setPort(PORT);
+
     if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_CREATED);
       PrintWriter out = response.getWriter();
       // write to db
       //
+      String season = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
+      try (Connection connection = factory.newConnection();
+          Channel channel = connection.createChannel()) {
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        channel.basicPublish("", QUEUE_NAME, null, season.getBytes(StandardCharsets.UTF_8));
+        System.out.println(" [x] Sent '" + season + "'");
+      } catch (TimeoutException e) {
+        e.printStackTrace();
+      }
       response.getWriter().write("new season created");
 
     }

@@ -77,8 +77,6 @@ public class Client {
     CountPart1 count = new CountPart1();
     CountDownLatch phase1Latch = new CountDownLatch(phase2Start.intValue());
     for (int i = 0; i < threadsToLaunch; i++) {
-      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-      LocalTime localTime = LocalTime.now();
       UpicThreadPart1 thread = new UpicThreadPart1(idStart, idStart + skiIdsToPass, startTime, endTime
           , numLifts, numRequestsToSend, client, count, phase1Latch);
       idStart += skiIdsToPass;

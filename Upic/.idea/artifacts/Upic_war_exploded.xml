@@ -15,6 +15,9 @@
           <element id="module-output" name="Upic" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.rabbitmq:amqp-client:5.14.2" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.32" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-simple:1.7.12" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.2.11" />
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-core:2.2.11" />
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.11" />

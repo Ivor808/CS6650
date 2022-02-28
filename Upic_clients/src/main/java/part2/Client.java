@@ -20,9 +20,9 @@ public class Client {
   public static void main(String[] args) throws InterruptedException {
     long totalStart = System.nanoTime();
     ApiClient client = new ApiClient();
-    client.setBasePath("http://localhost:8080/upic/");
-    Integer numThreads = 64;
-    Integer numSkiers = 1000;
+    client.setBasePath("http://34.226.122.247:8080/Upic_war/");
+    Integer numThreads = 256;
+    Integer numSkiers = 20000;c
     Integer numLifts = 40;
     Integer numRuns = 20;
 
