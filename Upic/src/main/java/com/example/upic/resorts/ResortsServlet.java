@@ -1,8 +1,8 @@
 package com.example.upic.resorts;
 
+import com.example.upic.ChannelFactory;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import io.swagger.client.model.ResortSkiers;
 import io.swagger.client.model.ResortsList;
@@ -19,6 +19,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
 
 @WebServlet(name = "resorts", value = "/resorts/*")
 public class ResortsServlet extends HttpServlet {
@@ -26,12 +29,33 @@ public class ResortsServlet extends HttpServlet {
   public static final String SEASONS = "seasons";
   public static final String SKIERS = "skiers";
   private final static String QUEUE_NAME = "UPIC_QUEUE";
-  private final static String HOST_NAME = "50.16.122.234";
+  private GenericObjectPool<Channel> channelPool;
+  private final static String HOST_NAME = "18.209.224.176";
   private final static int PORT = 5672;
-  private String message;
 
   public void init() {
-    message = "Hello World!";
+    GenericObjectPoolConfig<Channel> config = new GenericObjectPoolConfig<Channel>();
+    config.setMinIdle(15);
+    config.setMaxIdle(25);
+    config.setMaxTotal(50);
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    connectionFactory.setHost(HOST_NAME);
+    connectionFactory.setPort(PORT);
+    ChannelFactory factory = null;
+    try {
+      factory = new ChannelFactory(connectionFactory.newConnection());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (TimeoutException e) {
+      e.printStackTrace();
+    }
+    channelPool = new GenericObjectPool<Channel>(factory,config);
+    try {
+      channelPool.addObject();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
   }
 
   @Override
@@ -120,9 +144,7 @@ public class ResortsServlet extends HttpServlet {
       return;
     }
 
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost(HOST_NAME);
-    factory.setPort(PORT);
+
 
     if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_CREATED);
@@ -130,14 +152,16 @@ public class ResortsServlet extends HttpServlet {
       // write to db
       //
       String season = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
-      try (Connection connection = factory.newConnection();
-          Channel channel = connection.createChannel()) {
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+      Channel channel = null;
+      try {
+        channel = channelPool.borrowObject();
         channel.basicPublish("", QUEUE_NAME, null, season.getBytes(StandardCharsets.UTF_8));
-        System.out.println(" [x] Sent '" + season + "'");
-      } catch (TimeoutException e) {
+        channelPool.returnObject(channel);
+
+      } catch (Exception e) {
         e.printStackTrace();
       }
+      System.out.println(" [x] Sent '" + season + "'");
       response.getWriter().write("new season created");
 
     }
