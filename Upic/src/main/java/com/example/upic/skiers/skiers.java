@@ -1,19 +1,22 @@
 package com.example.upic.skiers;
 
+import com.example.upic.ChannelFactory;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 @WebServlet(name = "skiers", value = "/skiers/*")
 public class skiers extends HttpServlet {
@@ -21,10 +24,36 @@ public class skiers extends HttpServlet {
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "UPIC_QUEUE";
-  private final static String HOST_NAME = "54.175.237.216";
-  private final static int PORT = 1883;
-
+  private final static String HOST_NAME = "18.209.224.176";
+  private final static int PORT = 5672;
+  private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
+
+
+  public void init() {
+    GenericObjectPoolConfig<Channel> config = new GenericObjectPoolConfig<Channel>();
+    config.setMinIdle(15);
+    config.setMaxIdle(25);
+    config.setMaxTotal(50);
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    connectionFactory.setHost(HOST_NAME);
+    connectionFactory.setPort(PORT);
+    ChannelFactory factory = null;
+    try {
+      factory = new ChannelFactory(connectionFactory.newConnection());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (TimeoutException e) {
+      e.printStackTrace();
+    }
+    channelPool = new GenericObjectPool<Channel>(factory,config);
+    try {
+      channelPool.addObject();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -78,9 +107,6 @@ public class skiers extends HttpServlet {
       return;
     }
 
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost(HOST_NAME);
-    factory.setPort(PORT);
 
     String[] urlParts = urlPath.split("/");
     if (Arrays.asList(urlParts).contains(SEASONS)) {
@@ -94,15 +120,18 @@ public class skiers extends HttpServlet {
       //write to db
       totalHits ++;
 
-      try (Connection connection = factory.newConnection();
-          Channel channel = connection.createChannel()) {
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        channel.basicPublish("", QUEUE_NAME, null, skierId.getBytes(StandardCharsets.UTF_8));
-        System.out.println(" [x] Sent '" + skierId + "'");
-      } catch (TimeoutException e) {
+      String lift = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
+
+      Channel channel = null;
+      try {
+        channel = channelPool.borrowObject();
+        channel.basicPublish("", QUEUE_NAME, null, lift.getBytes(StandardCharsets.UTF_8));
+        channelPool.returnObject(channel);
+
+      } catch (Exception e) {
         e.printStackTrace();
       }
-      System.out.println(totalHits);
+      System.out.println(" [x] Sent '" + lift + "'");
       response.getWriter().write("write successful");
 
     }
