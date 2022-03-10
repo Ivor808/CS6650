@@ -12,5 +12,12 @@ public class LiftRide {
     this.waitTime = waitTime;
   }
 
-
+  @Override
+  public String toString() {
+    return "LiftRide{" +
+        "time=" + time +
+        ", liftID=" + liftID +
+        ", waitTime=" + waitTime +
+        '}';
+  }
 }

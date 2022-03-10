@@ -24,7 +24,7 @@ public class skiers extends HttpServlet {
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "UPIC_QUEUE";
-  private final static String HOST_NAME = "18.206.202.214";
+  private final static String HOST_NAME = "100.26.172.100";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
@@ -121,7 +121,14 @@ public class skiers extends HttpServlet {
       totalHits ++;
 
       String lift = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
-
+      lift = lift.replaceAll("\\\\", "");
+      lift = lift.substring(1,lift.length()-1);
+      if (!(lift.contains("time") && lift.contains("liftID") && lift.contains("waitTime"))) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().write("Must provide time, liftID, and waitTime params!");
+        return;
+      }
+      LiftRide liftRide = new Gson().fromJson(lift,LiftRide.class);
       Channel channel = null;
       try {
         channel = channelPool.borrowObject();
@@ -131,8 +138,8 @@ public class skiers extends HttpServlet {
       } catch (Exception e) {
         e.printStackTrace();
       }
-      System.out.println(" [x] Sent '" + lift + "'");
-      response.getWriter().write("write successful");
+      System.out.println(" [x] Sent '" + liftRide + "'");
+      response.getWriter().write(liftRide.toString());
 
     }
   }
