@@ -5,10 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b18cada-aae9-460a-865c-86d5704a3df6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Upic/src/main/java/com/example/upic/skiers/LiftRide.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic/src/main/java/com/example/upic/skiers/LiftRide.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic/src/main/java/com/example/upic/skiers/skiers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic/src/main/java/com/example/upic/skiers/skiers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/com/example/upic/skiers/skiers.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/com/example/upic/skiers/skiers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic/target/classes/com/example/upic/skiers/skiers.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic/target/classes/com/example/upic/skiers/skiers.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,7 +107,7 @@
       <workItem from="1646111320132" duration="2151000" />
       <workItem from="1646599309113" duration="7047000" />
       <workItem from="1646799412203" duration="3652000" />
-      <workItem from="1646874931457" duration="822000" />
+      <workItem from="1646874931457" duration="1415000" />
     </task>
     <servers />
   </component>

@@ -1,24 +1,54 @@
-package com.example.upic.skiers;
-
 import com.google.gson.Gson;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 @WebServlet(name = "skiers", value = "/skiers/*")
 public class skiers extends HttpServlet {
 
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
+  private final static String QUEUE_NAME = "UPIC_QUEUE";
+  private final static String HOST_NAME = "100.26.18.239";
+  private final static int PORT = 5672;
+  private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
 
 
   public void init() {
+    GenericObjectPoolConfig<Channel> config = new GenericObjectPoolConfig<Channel>();
+    config.setMinIdle(64);
+    config.setMaxIdle(128);
+    config.setMaxTotal(256);
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    connectionFactory.setHost(HOST_NAME);
+    connectionFactory.setPort(PORT);
+    ChannelFactory factory = null;
+    try {
+      factory = new ChannelFactory(connectionFactory.newConnection());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (TimeoutException e) {
+      e.printStackTrace();
+    }
+    channelPool = new GenericObjectPool<Channel>(factory,config);
+    try {
+      channelPool.addObject();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
   }
 
@@ -86,8 +116,27 @@ public class skiers extends HttpServlet {
       PrintWriter out = response.getWriter();
       //write to db
       totalHits ++;
-      System.out.println(totalHits);
-      response.getWriter().write("write successful");
+
+      String lift = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
+      lift = lift.replaceAll("\\\\", "");
+      lift = lift.substring(1,lift.length()-1);
+      if (!(lift.contains("time") && lift.contains("liftID") && lift.contains("waitTime"))) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().write("Must provide time, liftID, and waitTime params!");
+        return;
+      }
+      LiftRide liftRide = new Gson().fromJson(lift, LiftRide.class);
+      Channel channel = null;
+      try {
+        channel = channelPool.borrowObject();
+        channel.basicPublish("", QUEUE_NAME, null, lift.getBytes(StandardCharsets.UTF_8));
+        channelPool.returnObject(channel);
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      System.out.println(" [x] Sent '" + liftRide + "'");
+      response.getWriter().write(liftRide.toString());
 
     }
   }
