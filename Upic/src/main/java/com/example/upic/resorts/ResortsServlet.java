@@ -30,7 +30,7 @@ public class ResortsServlet extends HttpServlet {
   public static final String SKIERS = "skiers";
   private final static String QUEUE_NAME = "UPIC_QUEUE";
   private GenericObjectPool<Channel> channelPool;
-  private final static String HOST_NAME = "18.209.224.176";
+  private final static String HOST_NAME = "3.85.1.207";
   private final static int PORT = 5672;
 
   public void init() {

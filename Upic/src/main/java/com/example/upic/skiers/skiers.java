@@ -24,7 +24,7 @@ public class skiers extends HttpServlet {
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "UPIC_QUEUE";
-  private final static String HOST_NAME = "18.209.224.176";
+  private final static String HOST_NAME = "18.206.202.214";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
@@ -32,9 +32,9 @@ public class skiers extends HttpServlet {
 
   public void init() {
     GenericObjectPoolConfig<Channel> config = new GenericObjectPoolConfig<Channel>();
-    config.setMinIdle(15);
-    config.setMaxIdle(25);
-    config.setMaxTotal(50);
+    config.setMinIdle(64);
+    config.setMaxIdle(128);
+    config.setMaxTotal(256);
     ConnectionFactory connectionFactory = new ConnectionFactory();
     connectionFactory.setHost(HOST_NAME);
     connectionFactory.setPort(PORT);

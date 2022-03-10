@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 public class Consumer {
 
   private final static String QUEUE_NAME = "UPIC_QUEUE";
-  private final static String HOST="18.209.224.176";
+  private final static String HOST="18.206.202.214";
   private final static int PORT=5672;
 
   public static void main(String[] args) throws IOException, TimeoutException {
@@ -20,23 +20,24 @@ public class Consumer {
     factory.setHost(HOST);
     factory.setPort(PORT);
     Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
 
     ConcurrentHashMap<Delivery, String> consumedMessages = new ConcurrentHashMap<>();
 
-    ExecutorService executor = Executors.newFixedThreadPool(10);
+    ExecutorService executor = Executors.newFixedThreadPool(64);
 
-    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     DeliverCallback deliverCallback = (consumerTag, delivery) -> {
       String message = new String(delivery.getBody(), "UTF-8");
       consumedMessages.put(delivery,message);
-      System.out.println(consumedMessages.size());
+
 
     };
+    System.out.println(consumedMessages.size());
 
     Runnable consumerTask = () -> {
       try {
+        Channel channel = connection.createChannel();
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
         channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
         });
       } catch (IOException e) {
