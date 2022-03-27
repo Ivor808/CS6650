@@ -25,7 +25,7 @@ public class skiers extends HttpServlet {
 
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
-  private final static String QUEUE_NAME = "UPIC_QUEUE";
+  private final static String QUEUE_NAME = "Skiers";
   private final static String HOST_NAME = "100.26.219.200";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;

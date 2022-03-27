@@ -4,7 +4,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.Delivery;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -12,9 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import redis.clients.jedis.JedisPooled;
 
-public class SkierConsumer {
-
-  private final static String QUEUE_NAME = "Skiers";
+public class ResortConsumer {
+  private final static String QUEUE_NAME = "Resorts";
   private final static String HOST="100.26.219.200";
   private final static String REDIS_HOST="35.172.229.70";
   private final static int PORT=5672;
@@ -35,13 +33,13 @@ public class SkierConsumer {
     DeliverCallback deliverCallback = (consumerTag, delivery) -> {
       String message = new String(delivery.getBody(), "UTF-8");
 
-      JsonObject skier = new Gson().fromJson(message,JsonObject.class);
+      /*JsonObject skier = new Gson().fromJson(message,JsonObject.class);
       String skierId = skier.get("skierId").toString();
       skierId = skierId.substring(1,skierId.length()-1);
 
       jedis.set("skier" + skierId,message);
-      consumedMessages.put(skierId,message);
-      System.out.println(skierId);
+      consumedMessages.put(skierId,message);*/
+      System.out.println(message);
 
 
     };

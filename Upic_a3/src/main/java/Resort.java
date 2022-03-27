@@ -1,10 +1,15 @@
+import DataObjects.Day;
+import DataObjects.Lift;
+
 public class Resort {
   private String name;
-  private String id;
+  private String resortId;
+  private Lift[] lifts;
 
-  public Resort(String name, String id) {
+  public Resort(String name, String id, Lift[] lifts) {
     this.name = name;
-    this.id = id;
+    this.resortId = id;
+    this.lifts = lifts;
   }
 
   public String getName() {
@@ -15,11 +20,19 @@ public class Resort {
     this.name = name;
   }
 
-  public String getId() {
-    return id;
+  public String getResortId() {
+    return resortId;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setResortId(String resortId) {
+    this.resortId = resortId;
+  }
+
+  public Lift[] getLifts() {
+    return lifts;
+  }
+
+  public void setLifts(Lift[] lifts) {
+    this.lifts = lifts;
   }
 }

@@ -1,6 +1,12 @@
+import DataObjects.Day;
+import DataObjects.Lift;
+import DataObjects.Season;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
+import io.swagger.client.model.LiftRide;
 import io.swagger.client.model.ResortSkiers;
 import io.swagger.client.model.ResortsList;
 import io.swagger.client.model.ResortsListResorts;
@@ -25,9 +31,9 @@ public class ResortsServlet extends HttpServlet {
 
   public static final String SEASONS = "seasons";
   public static final String SKIERS = "skiers";
-  private final static String QUEUE_NAME = "UPIC_QUEUE";
+  private final static String QUEUE_NAME = "Resorts";
   private GenericObjectPool<Channel> channelPool;
-  private final static String HOST_NAME = "100.26.18.239";
+  private final static String HOST_NAME = "100.26.219.200";
   private final static int PORT = 5672;
 
   public void init() {
@@ -93,7 +99,7 @@ public class ResortsServlet extends HttpServlet {
       String dayId = urlParts[4];
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
-      Resort res = new Resort("blah", resortId);
+      Resort res = new Resort("Aspen", resortId,new Lift[]{new Lift("1", new Season[]{new Season(seasonId, new Day[]{new Day(dayId,new LiftRide[]{})})})});
       String resortJsonString = new Gson().toJson(res);
       // Hello
       out = response.getWriter();
@@ -148,18 +154,27 @@ public class ResortsServlet extends HttpServlet {
       PrintWriter out = response.getWriter();
       // write to db
       //
+
+
       String season = new Gson().toJson(request.getReader().lines().collect(Collectors.joining()));
+      season = season.replaceAll("\\\\", "");
+      season = season.substring(1,season.length()-1);
+      JsonObject jSeason = new Gson().fromJson(season, JsonObject.class);
+      String seasonYear = jSeason.get("year").toString();
+      Resort res = new Resort("Aspen", resortId,new Lift[]{new Lift("1", new Season[]{new Season(season, new Day[]{new Day("1/1",new LiftRide[]{})})})});
+      String stringRes = new Gson().toJson(res);
+      JsonObject jRes = new Gson().fromJson(stringRes, JsonObject.class);
       Channel channel = null;
       try {
         channel = channelPool.borrowObject();
-        channel.basicPublish("", QUEUE_NAME, null, season.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish("", QUEUE_NAME, null, stringRes.getBytes(StandardCharsets.UTF_8));
         channelPool.returnObject(channel);
 
       } catch (Exception e) {
         e.printStackTrace();
       }
-      System.out.println(" [x] Sent '" + season + "'");
-      response.getWriter().write("new season created");
+      System.out.println(" [x] Sent '" + seasonYear + "'");
+      response.getWriter().write("new season created for " + season + " at resort " + resortId);
 
     }
 

@@ -14,6 +14,12 @@ public class Day {
     this.vertTotal = vertTotal;
   }
 
+  public Day(String dayId, LiftRide[] liftRides) {
+    this.dayId = dayId;
+    this.liftRides = liftRides;
+    this.vertTotal = "0";
+  }
+
   public String getDayId() {
     return dayId;
   }
