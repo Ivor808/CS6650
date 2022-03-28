@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
@@ -140,6 +141,8 @@ public class ResortsServlet extends HttpServlet {
     String urlPath = request.getPathInfo();
     String[] urlParts = urlPath.split("/");
     String resortId = urlParts[1];
+    String liftId = String.valueOf(ThreadLocalRandom.current().nextInt(1, 15 + 1));
+    String day = String.valueOf(ThreadLocalRandom.current().nextInt(1, 365 + 1));
 
     if (!isValidURL(urlPath)) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -161,10 +164,11 @@ public class ResortsServlet extends HttpServlet {
       season = season.substring(1,season.length()-1);
       JsonObject jSeason = new Gson().fromJson(season, JsonObject.class);
       String seasonYear = jSeason.get("year").toString();
-      Resort res = new Resort("Aspen", resortId,new Lift[]{new Lift("1", new Season[]{new Season(season, new Day[]{new Day("1/1",new LiftRide[]{})})})});
+      Resort res = new Resort("Aspen", resortId,new Lift[]{new Lift(liftId, new Season[]{new Season(season, new Day[]{new Day(day,new LiftRide[]{})})})});
       String stringRes = new Gson().toJson(res);
       JsonObject jRes = new Gson().fromJson(stringRes, JsonObject.class);
       Channel channel = null;
+
       try {
         channel = channelPool.borrowObject();
         channel.basicPublish("", QUEUE_NAME, null, stringRes.getBytes(StandardCharsets.UTF_8));
