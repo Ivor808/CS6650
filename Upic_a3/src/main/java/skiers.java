@@ -132,7 +132,7 @@ public class skiers extends HttpServlet {
       LiftRide liftRide = new Gson().fromJson(lift, LiftRide.class);
       Day day = new Day(dayId, new LiftRide[]{liftRide},String.valueOf(liftRide.getLiftID() * 10));
       Season season = new Season(seasonId,new Day[]{day});
-      Skier skier = new Skier(new Season[]{season},skierId);
+      Skier skier = new Skier(season,skierId, String.valueOf(liftRide.getLiftID() * 10), dayId, liftRide);
       String stringSkier = new Gson().toJson(skier);
       JsonObject jSkier = new Gson().fromJson(stringSkier, JsonObject.class);
 

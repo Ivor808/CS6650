@@ -38,8 +38,15 @@ public class SkierConsumer {
       JsonObject skier = new Gson().fromJson(message,JsonObject.class);
       String skierId = skier.get("skierId").toString();
       skierId = skierId.substring(1,skierId.length()-1);
+      String season = skier.get("season").getAsJsonObject().get("seasonId").toString();
+      String vertTotal = skier.get("vertTotal").toString();
+      String dayId = skier.get("dayId").toString();
+      String liftRide = skier.get("liftRide").toString();
 
-      jedis.set("skier" + skierId,message);
+      // set the data
+      jedis.incr("Skier" + skierId + season);
+      jedis.incrBy("Skier" + skierId + "vert" + dayId,Integer.parseInt(vertTotal));
+      jedis.lpush("skier" + skierId + "liftride", liftRide);
       consumedMessages.put(skierId,message);
       System.out.println(skierId);
 
