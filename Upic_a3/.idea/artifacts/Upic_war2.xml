@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Upic:war2">
+    <output-path>$PROJECT_DIR$/out/artifacts/Upic_war2</output-path>
+    <root id="archive" name="Upic_war.war">
+      <element id="artifact" artifact-name="Upic:war exploded" />
+    </root>
+  </artifact>
+</component>

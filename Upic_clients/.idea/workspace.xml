@@ -5,7 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b18cada-aae9-460a-865c-86d5704a3df6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../Consumer/.idea/artifacts/Consumer_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Consumer/.idea/artifacts/ResortConsumer_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Upic_a3/.idea/artifacts/Upic_war2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Consumer/src/main/java/ResortConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/src/main/java/ResortConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Consumer/src/main/java/SkierConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/src/main/java/SkierConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Consumer/target/classes/ResortConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/target/classes/ResortConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Consumer/target/classes/SkierConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/target/classes/SkierConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/DataObjects/Skier.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/DataObjects/Skier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/Resort.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/DataObjects/Resort.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/ResortsServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/ResortsServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/skiers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/skiers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/DataObjects/Skier.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/DataObjects/Skier.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/Resort.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/ResortsServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/ResortsServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/skiers.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/skiers.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/DataObjects/Skier.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/classes/DataObjects/Skier.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/Resort.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/ResortsServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/classes/ResortsServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/skiers.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/classes/skiers.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client_times.csv" beforeDir="false" afterPath="$PROJECT_DIR$/client_times.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/part2/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/part2/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/part2/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/part2/Client.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +48,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Consumer" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -108,6 +130,7 @@
       <workItem from="1646599309113" duration="7047000" />
       <workItem from="1646799412203" duration="3652000" />
       <workItem from="1646874931457" duration="1415000" />
+      <workItem from="1648923900356" duration="17630000" />
     </task>
     <servers />
   </component>

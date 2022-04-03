@@ -9,13 +9,15 @@ public class Skier {
   private String vertTotal;
   private String day;
   private LiftRide liftRide;
+  private String resortid;
 
-  public Skier(Season season, String skierId, String vertTotal, String day, LiftRide liftRide) {
+  public Skier(Season season, String skierId, String vertTotal, String day, LiftRide liftRide, String resortid) {
     this.season = season;
     this.skierId = skierId;
     this.vertTotal = vertTotal;
     this.day = day;
     this.liftRide = liftRide;
+    this.resortid = resortid;
   }
 
   public Season getSeasons() {
@@ -64,5 +66,13 @@ public class Skier {
 
   public void setLiftRide(LiftRide liftRide) {
     this.liftRide = liftRide;
+  }
+
+  public String getResortid() {
+    return resortid;
+  }
+
+  public void setResortid(String resortid) {
+    this.resortid = resortid;
   }
 }

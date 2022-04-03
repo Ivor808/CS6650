@@ -1,4 +1,5 @@
 import DataObjects.Day;
+import DataObjects.Resort;
 import DataObjects.Season;
 import DataObjects.Skier;
 import com.google.gson.Gson;
@@ -26,7 +27,8 @@ public class skiers extends HttpServlet {
   public static final String VERTICAL = "vertical";
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "Skiers";
-  private final static String HOST_NAME = "100.26.219.200";
+  private final static String RESORT_QUEUE = "resort";
+  private final static String HOST_NAME = "52.91.133.89";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
@@ -132,7 +134,7 @@ public class skiers extends HttpServlet {
       LiftRide liftRide = new Gson().fromJson(lift, LiftRide.class);
       Day day = new Day(dayId, new LiftRide[]{liftRide},String.valueOf(liftRide.getLiftID() * 10));
       Season season = new Season(seasonId,new Day[]{day});
-      Skier skier = new Skier(season,skierId, String.valueOf(liftRide.getLiftID() * 10), dayId, liftRide);
+      Skier skier = new Skier(season,skierId, String.valueOf(liftRide.getLiftID() * 10), dayId, liftRide, resortId);
       String stringSkier = new Gson().toJson(skier);
       JsonObject jSkier = new Gson().fromJson(stringSkier, JsonObject.class);
 
@@ -141,6 +143,7 @@ public class skiers extends HttpServlet {
       try {
         channel = channelPool.borrowObject();
         channel.basicPublish("", QUEUE_NAME, null, stringSkier.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish("",RESORT_QUEUE,null,stringSkier.getBytes(StandardCharsets.UTF_8));
         channelPool.returnObject(channel);
 
       } catch (Exception e) {

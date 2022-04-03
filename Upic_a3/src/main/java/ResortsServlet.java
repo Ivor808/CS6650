@@ -1,9 +1,9 @@
 import DataObjects.Day;
 import DataObjects.Lift;
+import DataObjects.Resort;
 import DataObjects.Season;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
 import io.swagger.client.model.LiftRide;
