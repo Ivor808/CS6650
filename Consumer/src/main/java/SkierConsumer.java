@@ -68,6 +68,7 @@ public class SkierConsumer {
       String dayId = skier.get("day").toString();
       dayId = dayId.substring(1,dayId.length()-1);
       String liftRide = skier.get("liftRide").toString();
+      String resortId = skier.get("resortid").toString();
 
       // set the data
       String finalSkierId = skierId;
@@ -81,8 +82,11 @@ public class SkierConsumer {
       String finalSkierId1 = skierId;
       String finalDayId = dayId;
       String finalVertTotal = vertTotal;
+      String finalSeason1 = season;
+      String finalDayId1 = dayId;
+      String finalSkierId3 = skierId;
       Runnable incrBy = () -> {
-        jedis.incrBy("skier" + finalSkierId1 + "vert" + finalDayId,Long.parseLong(finalVertTotal));
+        jedis.incrBy(resortId + finalSeason1 + finalDayId1 + finalSkierId3,Long.parseLong(finalVertTotal));
       };
       Thread incrByThread = new Thread(incrBy);
       incrByThread.start();
@@ -93,7 +97,16 @@ public class SkierConsumer {
       };
       Thread lpushThread = new Thread(lpush);
       lpushThread.start();
+
+      String finalSeason2 = season;
+      Runnable vertRun = () -> {
+        jedis.incrBy("vert" + finalSkierId3 + resortId + finalSeason2,Long.parseLong(finalVertTotal));
+      };
+
+      new Thread(vertRun).start();
     };
+
+
 
     Runnable consumerTask = () -> {
       Channel channel = null;

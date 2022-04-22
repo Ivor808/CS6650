@@ -57,13 +57,14 @@ public class ResortConsumer {
       JsonObject skier = new Gson().fromJson(message,JsonObject.class);
       String skierId = skier.get("skierId").toString();
       skierId = skierId.substring(1,skierId.length()-1);
+      String season = skier.get("season").getAsJsonObject().get("seasonId").toString();
       String dayId = skier.get("day").toString();
       String liftId = skier.get("liftRide").getAsJsonObject().get("liftID").toString();
       String resortId = skier.get("resortid").toString();
 
       String finalSkierId = skierId;
       Runnable incr = () -> {
-        jedis.incr("skier" + finalSkierId + dayId + resortId);
+        jedis.sadd(season+dayId+resortId,finalSkierId);
       };
       Thread incrThread = new Thread(incr);
       incrThread.start();
