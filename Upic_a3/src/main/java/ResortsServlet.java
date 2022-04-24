@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import redis.clients.jedis.JedisPooled;
 
 
 @WebServlet(name = "resorts", value = "/resorts/*")
@@ -34,8 +35,10 @@ public class ResortsServlet extends HttpServlet {
   public static final String SKIERS = "skiers";
   private final static String QUEUE_NAME = "Resorts";
   private GenericObjectPool<Channel> channelPool;
-  private final static String HOST_NAME = "100.26.219.200";
+  private final static String RABBIT_HOST = "100.26.226.67";
+  private final static String REDIS_HOST="54.167.65.112";
   private final static int PORT = 5672;
+  private JedisPooled jedis;
 
   public void init() {
     GenericObjectPoolConfig<Channel> config = new GenericObjectPoolConfig<Channel>();
@@ -43,9 +46,11 @@ public class ResortsServlet extends HttpServlet {
     config.setMaxIdle(25);
     config.setMaxTotal(50);
     ConnectionFactory connectionFactory = new ConnectionFactory();
-    connectionFactory.setHost(HOST_NAME);
+    connectionFactory.setHost(RABBIT_HOST);
     connectionFactory.setPort(PORT);
     ChannelFactory factory = null;
+
+    jedis = new JedisPooled(REDIS_HOST, 6379);
     try {
       factory = new ChannelFactory(connectionFactory.newConnection());
     } catch (IOException e) {
@@ -92,19 +97,18 @@ public class ResortsServlet extends HttpServlet {
 
 
     String[] urlParts = urlPath.split("/");
-    String resortId = urlParts[0];
+    String resortId = urlParts[1];
 
     if (Arrays.asList(urlParts).contains(SKIERS)) {
       response.setStatus(HttpServletResponse.SC_OK);
-      String seasonId = urlParts[2];
-      String dayId = urlParts[4];
+      String seasonId = urlParts[3];
+      String dayId = urlParts[5];
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
-      Resort res = new Resort("Aspen", resortId,new Lift[]{new Lift("1", new Season[]{new Season(seasonId, new Day[]{new Day(dayId,new LiftRide[]{})})})});
-      String resortJsonString = new Gson().toJson(res);
-      // Hello
+      String redisKey = seasonId + dayId + resortId;
+      Long count = jedis.scard(redisKey);
       out = response.getWriter();
-      out.println(resortJsonString);
+      out.println(count);
       out.flush();
     } else if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_OK);

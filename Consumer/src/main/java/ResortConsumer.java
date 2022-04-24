@@ -16,8 +16,8 @@ import redis.clients.jedis.JedisPooled;
 public class ResortConsumer {
   private final static String QUEUE_NAME = "resort";
   private final static String HOST="100.26.219.200";
-  private final static String REDIS_HOST="54.159.37.116";
-  private final static String RABBIT_HOST ="52.91.133.89";
+  private final static String REDIS_HOST="54.167.65.112";
+  private final static String RABBIT_HOST ="100.26.226.67";
   private final static int PORT=5672;
 
   public static void main(String[] args) throws IOException, TimeoutException {
@@ -50,7 +50,7 @@ public class ResortConsumer {
 
     ExecutorService executor = Executors.newFixedThreadPool(64);
 
-    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+    System.out.println(" [*] Waiting for resort messages. To exit press CTRL+C");
     DeliverCallback deliverCallback = (consumerTag, delivery) -> {
       String message = new String(delivery.getBody(), "UTF-8");
 
@@ -58,25 +58,31 @@ public class ResortConsumer {
       String skierId = skier.get("skierId").toString();
       skierId = skierId.substring(1,skierId.length()-1);
       String season = skier.get("season").getAsJsonObject().get("seasonId").toString();
+      season = season.substring(1,season.length()-1);
       String dayId = skier.get("day").toString();
+      dayId = dayId.substring(1,dayId.length()-1);
       String liftId = skier.get("liftRide").getAsJsonObject().get("liftID").toString();
       String resortId = skier.get("resortid").toString();
+      resortId = resortId.substring(1,resortId.length()-1);
 
       String finalSkierId = skierId;
+      String finalSeason = season;
+      String finalDayId = dayId;
+      String finalResortId = resortId;
       Runnable incr = () -> {
-        jedis.sadd(season+dayId+resortId,finalSkierId);
+        jedis.sadd(finalSeason + finalDayId + finalResortId,finalSkierId);
       };
       Thread incrThread = new Thread(incr);
       incrThread.start();
 
       Runnable incr2 = () -> {
-        jedis.incr(liftId + dayId);
+        jedis.incr(liftId + finalDayId);
       };
       Thread incr2Thread = new Thread(incr2);
       incr2Thread.start();
 
       Runnable lpush = () -> {
-        jedis.lpush(dayId,liftId);
+        jedis.lpush(finalDayId,liftId);
       };
       Thread lpushThread = new Thread(lpush);
       lpushThread.start();

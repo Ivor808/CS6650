@@ -1,5 +1,4 @@
 import DataObjects.Day;
-import DataObjects.Resort;
 import DataObjects.Season;
 import DataObjects.Skier;
 import com.google.gson.Gson;
@@ -20,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import redis.clients.jedis.JedisPooled;
 
 @WebServlet(name = "skiers", value = "/skiers/*")
 public class skiers extends HttpServlet {
@@ -28,10 +28,12 @@ public class skiers extends HttpServlet {
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "Skiers";
   private final static String RESORT_QUEUE = "resort";
-  private final static String HOST_NAME = "52.91.133.89";
+  private final static String RABBIT_HOST = "100.26.226.67";
+  private final static String REDIS_HOST="54.167.65.112";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
+  private JedisPooled jedis;
 
 
   public void init() {
@@ -40,7 +42,7 @@ public class skiers extends HttpServlet {
     config.setMaxIdle(128);
     config.setMaxTotal(256);
     ConnectionFactory connectionFactory = new ConnectionFactory();
-    connectionFactory.setHost(HOST_NAME);
+    connectionFactory.setHost(RABBIT_HOST);
     connectionFactory.setPort(PORT);
     ChannelFactory factory = null;
     try {
@@ -51,6 +53,7 @@ public class skiers extends HttpServlet {
       e.printStackTrace();
     }
     channelPool = new GenericObjectPool<Channel>(factory,config);
+    jedis = new JedisPooled(REDIS_HOST, 6379);
     try {
       channelPool.addObject();
     } catch (Exception e) {
@@ -73,25 +76,38 @@ public class skiers extends HttpServlet {
 
     String[] urlParts = urlPath.split("/");
 
+    // /skiers/{skierID}/vertical
     if (Arrays.asList(urlParts).contains(VERTICAL)) {
       response.setStatus(HttpServletResponse.SC_OK);
       response.setContentType("application/json");
       String skierId = urlParts[1];
-      // Hello
+      String resortId = request.getParameter("resort");
+      String seasonId = request.getParameter("season");
+      String redisKey = "vert" + skierId + resortId + seasonId;
       PrintWriter out = response.getWriter();
-      String totalVert = new Gson().toJson(1000);
+      // get all vert if no season provided
+      if (seasonId == null) {
+        redisKey = "vert" + skierId + resortId;
+      }
+      System.out.println(redisKey);
+      Long totalVert = Long.valueOf(jedis.get(redisKey));
       out = response.getWriter();
       out.println(totalVert);
       out.flush();
+
+      // /skiers/{resortID}/seasons/{seasonID}/days/{dayID}/skiers/{skierID}
     } else if (Arrays.asList(urlParts).contains(SEASONS)) {
       response.setStatus(HttpServletResponse.SC_OK);
       response.setContentType("application/json");
+
+
       String resortId = urlParts[1];
       String seasonId = urlParts[3];
       String dayId = urlParts[5];
       String skierId = urlParts[7];
+
+      String totalVert = jedis.get(resortId + seasonId + dayId + skierId);
       PrintWriter out = response.getWriter();
-      String totalVert = new Gson().toJson(1000);
       out = response.getWriter();
       out.println(totalVert);
       out.flush();

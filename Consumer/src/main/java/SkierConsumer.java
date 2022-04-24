@@ -18,8 +18,8 @@ import redis.clients.jedis.JedisPooled;
 public class SkierConsumer {
 
   private final static String QUEUE_NAME = "Skiers";
-  private final static String RABBIT_HOST ="52.91.133.89";
-  private final static String REDIS_HOST="54.159.37.116";
+  private final static String RABBIT_HOST ="100.26.226.67";
+  private final static String REDIS_HOST="54.167.65.112";
   private final static int PORT=5672;
 
 
@@ -54,7 +54,7 @@ public class SkierConsumer {
 
     ExecutorService executor = Executors.newFixedThreadPool(256);
 
-    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+    System.out.println(" [*] Waiting for skier messages. To exit press CTRL+C");
     DeliverCallback deliverCallback = (consumerTag, delivery) -> {
       String message = new String(delivery.getBody(), "UTF-8");
 
@@ -69,6 +69,8 @@ public class SkierConsumer {
       dayId = dayId.substring(1,dayId.length()-1);
       String liftRide = skier.get("liftRide").toString();
       String resortId = skier.get("resortid").toString();
+      resortId = resortId.substring(1,resortId.length()-1);
+      String liftId = skier.get("liftRide").getAsJsonObject().get("liftID").toString();
 
       // set the data
       String finalSkierId = skierId;
@@ -85,8 +87,9 @@ public class SkierConsumer {
       String finalSeason1 = season;
       String finalDayId1 = dayId;
       String finalSkierId3 = skierId;
+      String finalResortId = resortId;
       Runnable incrBy = () -> {
-        jedis.incrBy(resortId + finalSeason1 + finalDayId1 + finalSkierId3,Long.parseLong(finalVertTotal));
+        jedis.incrBy(finalResortId + finalSeason1 + finalDayId1 + finalSkierId3,Long.parseLong(finalVertTotal));
       };
       Thread incrByThread = new Thread(incrBy);
       incrByThread.start();
@@ -100,10 +103,30 @@ public class SkierConsumer {
 
       String finalSeason2 = season;
       Runnable vertRun = () -> {
-        jedis.incrBy("vert" + finalSkierId3 + resortId + finalSeason2,Long.parseLong(finalVertTotal));
+        jedis.incrBy("vert" + finalSkierId3 + finalResortId + finalSeason2,Long.parseLong(finalVertTotal));
+        jedis.incrBy("vert" + finalSkierId3 + finalResortId,Long.parseLong(finalVertTotal));
       };
 
       new Thread(vertRun).start();
+
+      Runnable incrVert = () -> {
+        jedis.sadd(finalSeason + finalDayId + finalResortId,finalSkierId);
+      };
+      Thread incrVertThread = new Thread(incrVert);
+      incrVertThread.start();
+
+      Runnable incr2 = () -> {
+        jedis.incr(liftId + finalDayId);
+      };
+      Thread incr2Thread = new Thread(incr2);
+      incr2Thread.start();
+
+      Runnable liftRideRunnable = () -> {
+        jedis.lpush(finalDayId,liftId);
+      };
+      Thread liftRideThread = new Thread(liftRideRunnable);
+      liftRideThread.start();
+      System.out.println("working!");
     };
 
 

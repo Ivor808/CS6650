@@ -83,7 +83,7 @@ public class UpicThread implements Runnable {
           continue;
         }
         try {
-          response = skiersApi.writeNewLiftRideWithHttpInfo(liftRide, 1, "1", "1", randSkiId);
+          response = skiersApi.writeNewLiftRideWithHttpInfo(liftRide, 1, "winter2020", "3", randSkiId);
           if (response.getStatusCode() == 201 ) {
             count.addSuccess();
           }
