@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b18cada-aae9-460a-865c-86d5704a3df6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Upic_a3/.idea/libraries/Maven__org_json_json_20211205.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Upic_a3/.idea/libraries/Maven__redis_clients_jedis_4_2_0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/.idea/artifacts/Consumer_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/.idea/artifacts/Consumer_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/.idea/artifacts/ResortConsumer_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/.idea/artifacts/Consumer_jar2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/out/artifacts/Consumer_jar/Consumer.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/out/artifacts/Consumer_jar/Consumer.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/out/artifacts/ResortConsumer_jar/Consumer.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/out/artifacts/ResortConsumer_jar/Consumer.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/src/main/java/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/src/main/java/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/src/main/java/ResortConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/src/main/java/ResortConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/src/main/java/SkierConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/src/main/java/SkierConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/target/classes/ResortConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/target/classes/ResortConsumer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Consumer/target/classes/SkierConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Consumer/target/classes/SkierConsumer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic_a3/.idea/artifacts/Upic_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/.idea/artifacts/Upic_war_exploded.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic_a3/Upic.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/Upic.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Upic_a3/out/artifacts/Upic_war2/Upic_war.war" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/out/artifacts/Upic_war2/Upic_war.war" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Upic_a3/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/ResortsServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/ResortsServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Upic_a3/src/main/java/skiers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/src/main/java/skiers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/ResortsServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/Upic-1.0-SNAPSHOT/WEB-INF/classes/ResortsServlet.class" afterDir="false" />
@@ -27,11 +13,6 @@
       <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/ResortsServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/classes/ResortsServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Upic_a3/target/classes/skiers.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Upic_a3/target/classes/skiers.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client_times.csv" beforeDir="false" afterPath="$PROJECT_DIR$/client_times.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/helpers/UpicThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/helpers/UpicThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/part2/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/part2/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/helpers/UpicThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/helpers/UpicThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/part2/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/part2/Client.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

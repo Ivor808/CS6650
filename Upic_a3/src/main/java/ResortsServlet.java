@@ -35,8 +35,8 @@ public class ResortsServlet extends HttpServlet {
   public static final String SKIERS = "skiers";
   private final static String QUEUE_NAME = "Resorts";
   private GenericObjectPool<Channel> channelPool;
-  private final static String RABBIT_HOST = "100.26.226.67";
-  private final static String REDIS_HOST="54.167.65.112";
+  private final static String RABBIT_HOST = "52.4.57.182";
+  private final static String REDIS_HOST="18.212.93.180";
   private final static int PORT = 5672;
   private JedisPooled jedis;
 

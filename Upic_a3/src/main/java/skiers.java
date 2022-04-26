@@ -28,8 +28,8 @@ public class skiers extends HttpServlet {
   public static final String SEASONS = "seasons";
   private final static String QUEUE_NAME = "Skiers";
   private final static String RESORT_QUEUE = "resort";
-  private final static String RABBIT_HOST = "100.26.226.67";
-  private final static String REDIS_HOST="54.167.65.112";
+  private final static String RABBIT_HOST = "52.4.57.182";
+  private final static String REDIS_HOST="18.212.93.180";
   private final static int PORT = 5672;
   private GenericObjectPool<Channel> channelPool;
   private int totalHits = 0;
@@ -89,7 +89,13 @@ public class skiers extends HttpServlet {
       if (seasonId == null) {
         redisKey = "vert" + skierId + resortId;
       }
-      System.out.println(redisKey);
+      String val =jedis.get(redisKey);
+      if (val == null) {
+        out = response.getWriter();
+        out.println("skier not found");
+        out.flush();
+        return;
+      }
       Long totalVert = Long.valueOf(jedis.get(redisKey));
       out = response.getWriter();
       out.println(totalVert);
